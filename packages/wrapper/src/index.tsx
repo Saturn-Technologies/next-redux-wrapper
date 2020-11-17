@@ -82,7 +82,7 @@ const initStore = <S extends {} = any, A extends Action = AnyAction>({
 // }
 
 export const createWrapper = <S extends {} = any, A extends Action = AnyAction>(
-    makeStore: MakeStore<S, A>,
+    makeStateInjectedStore: (initialState : S | void) => MakeStore<S, A>,
     config: Config<S> = {},
 ) => {
     const makeProps = async ({
@@ -94,7 +94,7 @@ export const createWrapper = <S extends {} = any, A extends Action = AnyAction>(
         context: Context;
         isApp?: boolean;
     }): Promise<WrapperProps> => {
-        const store = initStore({context, makeStore, config});
+        const store = initStore({context, makeStore: makeStateInjectedStore(), config});
 
         if (config.debug) console.log(`1. getProps created store with state`, store.getState());
 
@@ -170,7 +170,7 @@ export const createWrapper = <S extends {} = any, A extends Action = AnyAction>(
                     initialStateFromGSPorGSSR,
                 });
 
-            const store = useRef<Store<S, A>>(initStore({makeStore, config, context}));
+            const store = useRef<Store<S, A>>(initStore({makeStore: makeStateInjectedStore(initialState), config, context}));
 
             const hydrate = useCallback(() => {
                 if (initialState)
