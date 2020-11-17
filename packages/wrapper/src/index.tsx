@@ -170,7 +170,7 @@ export const createWrapper = <S extends {} = any, A extends Action = AnyAction>(
                     initialStateFromGSPorGSSR,
                 });
 
-            const store = useRef<Store<S, A>>(initStore({makeStore: makeStateInjectedStore(initialState), config, context}));
+            const store = useRef<Store<S, A>>(initStore({makeStore: makeStateInjectedStore(getDeserializedState(initialState, config)), config, context}));
 
             const hydrate = useCallback(() => {
                 if (initialState)
